@@ -15,7 +15,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
         Scene scene = new Scene(root, 720, 480);
 
-        scene.getStylesheets().add(getClass().getResource("menuCSS.css").toExternalForm());
+       // scene.getStylesheets().add(getClass().getResource("menuCSS.css").toExternalForm());
         primaryStage.setResizable(false);
         primaryStage.setTitle("Apalabrados");
         primaryStage.setScene(scene);
