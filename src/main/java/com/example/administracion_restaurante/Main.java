@@ -17,7 +17,7 @@ public class Main extends Application {
 
        // scene.getStylesheets().add(getClass().getResource("menuCSS.css").toExternalForm());
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Apalabrados");
+        primaryStage.setTitle("Restaurante");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
