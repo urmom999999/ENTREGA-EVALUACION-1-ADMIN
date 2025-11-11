@@ -13,7 +13,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
-        Scene scene = new Scene(root, 720, 480);
+        Scene scene = new Scene(root, 600, 400);
 
        // scene.getStylesheets().add(getClass().getResource("menuCSS.css").toExternalForm());
         primaryStage.setResizable(false);
