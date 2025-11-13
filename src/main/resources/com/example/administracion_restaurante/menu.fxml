@@ -17,9 +17,9 @@
             </font></Text>
       <Group layoutX="258.0" layoutY="92.0">
          <children>
-            <Text fx:id="TextFill" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
-            <Button fx:id="ButtonFree" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
-            <Button fx:id="ButtonServe" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
+            <Text fx:id="TextFill1" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
+            <Button fx:id="ButtonFree1" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
+            <Button fx:id="ButtonServe1" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
             <Circle id="m31" fill="#616161" layoutX="27.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m34" fill="#616161" layoutX="55.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m33" fill="#616161" layoutX="27.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
@@ -29,9 +29,9 @@
       </Group>
       <Group layoutX="27.0" layoutY="92.0">
          <children>
-            <Text fx:id="TextFill1" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
-            <Button fx:id="ButtonFree1" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
-            <Button fx:id="ButtonServe1" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
+            <Text fx:id="TextFill2" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
+            <Button fx:id="ButtonFree2" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
+            <Button fx:id="ButtonServe2" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
             <Circle id="m11" fill="#616161" layoutX="27.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m14" fill="#616161" layoutX="55.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m13" fill="#616161" layoutX="27.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
@@ -41,9 +41,9 @@
       </Group>
       <Group layoutX="494.0" layoutY="92.0">
          <children>
-            <Text fx:id="TextFill2" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
-            <Button fx:id="ButtonFree2" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
-            <Button fx:id="ButtonServe2" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
+            <Text fx:id="TextFill3" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
+            <Button fx:id="ButtonFree3" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
+            <Button fx:id="ButtonServe3" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
             <Circle id="m51" fill="#616161" layoutX="27.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m54" fill="#616161" layoutX="55.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m53" fill="#616161" layoutX="27.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
@@ -53,9 +53,9 @@
       </Group>
       <Group layoutX="376.0" layoutY="92.0">
          <children>
-            <Text fx:id="TextFill3" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
-            <Button fx:id="ButtonFree3" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
-            <Button fx:id="ButtonServe3" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
+            <Text fx:id="TextFill4" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
+            <Button fx:id="ButtonFree4" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
+            <Button fx:id="ButtonServe4" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
             <Circle id="m41" fill="#616161" layoutX="27.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m44" fill="#616161" layoutX="55.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m43" fill="#616161" layoutX="27.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
@@ -65,9 +65,9 @@
       </Group>
       <Group layoutX="140.0" layoutY="92.0">
          <children>
-            <Text fx:id="TextFill4" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
-            <Button fx:id="ButtonFree4" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
-            <Button fx:id="ButtonServe4" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
+            <Text fx:id="TextFill5" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.0" />
+            <Button fx:id="ButtonFree5" layoutY="224.0" mnemonicParsing="false" text="Liberar mesa" />
+            <Button fx:id="ButtonServe5" layoutY="190.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Servir" />
             <Circle id="m21" fill="#616161" layoutX="27.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m24" fill="#616161" layoutX="55.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
             <Circle id="m23" fill="#616161" layoutX="27.0" layoutY="45.0" radius="13.0" stroke="WHITE" strokeType="INSIDE" />
