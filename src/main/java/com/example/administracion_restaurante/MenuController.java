@@ -135,8 +135,9 @@ public class MenuController {
                     String clienteId = clienteObj.getString("_id");
                     servirClienteEnServidor(clienteId);
 
-                    // SOLO ESTA LÍNEA:
                     enviarMensajeWebSocket(clienteId, numeroMesa);
+
+                    limpiarPedidosCliente(clienteId);
                 }
 
                 // Enviar mensaje via WebSocket en lugar de Intent
@@ -149,7 +150,24 @@ public class MenuController {
             }
         }).start();
     }
+    private void limpiarPedidosCliente(String clienteId) {
+        try {
+            URL url = new URL("http://localhost:5000/clientes/" + clienteId + "/limpiar-pedidos");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
 
+            int code = connection.getResponseCode();
+            if (code == 200) {
+                System.out.println("Pedidos limpiados para cliente: " + clienteId);
+            } else {
+                System.out.println("Error limpiando pedidos: " + code);
+            }
+        } catch (Exception e) {
+            System.err.println("Error en limpiarPedidosCliente: " + e.getMessage());
+        }
+    }
     private void enviarMensajeWebSocket(String clienteId, int numeroMesa) {
         try {
             JSONObject message = new JSONObject();
