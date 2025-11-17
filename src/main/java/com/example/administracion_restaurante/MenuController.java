@@ -29,11 +29,11 @@ public class MenuController {
     private Text TextFill1, TextFill2, TextFill3, TextFill4, TextFill5;
 
     private String[] mesaIds = {
-            "6913f603bd20090f1876023c", // Mesa 1
-            "6913f603bd20090f1876023d", // Mesa 2
-            "6913f603bd20090f1876023e", // Mesa 3
-            "6913f603bd20090f1876023f", // Mesa 4
-            "6913f603bd20090f18760240"  // Mesa 5
+            "6913f603bd20090f1876023c", //Mesa 1
+            "6913f603bd20090f1876023d", //Mesa 2
+            "6913f603bd20090f1876023e", //Mesa 3
+            "6913f603bd20090f1876023f", //Mesa 4
+            "6913f603bd20090f18760240"  //Mesa 5
     };
     private okhttp3.WebSocket webSocket;
     private okhttp3.OkHttpClient client;
@@ -52,7 +52,7 @@ public class MenuController {
         timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
             cargarMesas();
         }));
-        timeline.setCycleCount(Timeline.INDEFINITE); // Ejecutar indefinidamente
+        timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
@@ -150,7 +150,7 @@ public class MenuController {
                 System.out.println("=== INICIANDO SERVICIO MESA " + numeroMesa + " ===");
                 System.out.println("Clientes a servir: " + clientes.length());
 
-                // PRIMERO: Cambiar estado de los clientes a "servido"
+                //Cambiar a servido
                 for (int i = 0; i < clientes.length(); i++) {
                     JSONObject clienteObj = clientes.getJSONObject(i);
                     String clienteId = clienteObj.getString("_id");
@@ -160,21 +160,21 @@ public class MenuController {
                     servirClienteEnServidor(clienteId);
                 }
 
-                // SEGUNDO: Enviar mensaje WebSocket a TODOS los clientes
+//Mensaje websocket AÑADIR AL MENU!!!!
                 for (int i = 0; i < clientes.length(); i++) {
                     JSONObject clienteObj = clientes.getJSONObject(i);
                     String clienteId = clienteObj.getString("_id");
                     enviarMensajeWebSocket(clienteId, numeroMesa);
                 }
 
-                // TERCERO: Limpiar pedidos de los clientes
+//limpiar
                 for (int i = 0; i < clientes.length(); i++) {
                     JSONObject clienteObj = clientes.getJSONObject(i);
                     String clienteId = clienteObj.getString("_id");
                     limpiarPedidosCliente(clienteId);
                 }
 
-                // VERIFICAR: Obtener el estado actualizado de la mesa
+//verificar obtenr estado
                 String mesaActualizadaData = getMesaFromServer(mesaId);
                 JSONObject mesaActualizada = new JSONObject(mesaActualizadaData);
                 String estadoFinal = mesaActualizada.getString("estado");
@@ -246,12 +246,12 @@ public class MenuController {
         Circle[] circulosMesa = getCirculosByMesa(numeroMesa);
 
         if (circulosMesa != null) {
-            // Resetear todos los círculos de la mesa
+            //reset
             for (Circle circle : circulosMesa) {
-                circle.setFill(javafx.scene.paint.Color.GRAY); // Color por defecto
+                circle.setFill(javafx.scene.paint.Color.GRAY);
             }
 
-            // Colorear solo los círculos de clientes activos
+            //SOLO clientes activos
             for (int i = 0; i < numClientes && i < 4; i++) {
                 Color color = getColorByEstado(estado);
                 circulosMesa[i].setFill(color);
@@ -297,7 +297,7 @@ public class MenuController {
         }
     }
 
-    // ========== MÉTODOS DE CONEXIÓN CON EL SERVIDOR ==========
+//===============CONEXIÓN CON EL SERVIDOR
 
     private String getMesasFromServer() {
         try {
