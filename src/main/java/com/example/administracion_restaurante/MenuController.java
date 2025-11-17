@@ -242,23 +242,27 @@ public class MenuController {
     }
 
 //CAMBIAR COLOR CIRCULO
-    private void actualizarTextFill(int numeroMesa, String estado, int numClientes) {
-        Circle[] circulosMesa = getCirculosByMesa(numeroMesa);
+private void actualizarTextFill(int numeroMesa, String estado, int numClientes) {
+    Circle[] circulosMesa = getCirculosByMesa(numeroMesa);
+    Text textFill = getTextFillByNumber(numeroMesa);
 
-        if (circulosMesa != null) {
-            //reset
-            for (Circle circle : circulosMesa) {
-                circle.setFill(javafx.scene.paint.Color.GRAY);
-            }
+    if (textFill != null) {
+        textFill.setText(estado.toUpperCase());
+    }
 
-            //SOLO clientes activos
-            for (int i = 0; i < numClientes && i < 4; i++) {
-                Color color = getColorByEstado(estado);
-                circulosMesa[i].setFill(color);
-            }
+    if (circulosMesa != null) {
+//RESET
+        for (Circle circle : circulosMesa) {
+            circle.setFill(javafx.scene.paint.Color.GRAY);
         }
 
+//Revisar si los clientes estan activos
+        for (int i = 0; i < numClientes && i < 4; i++) {
+            Color color = getColorByEstado(estado);
+            circulosMesa[i].setFill(color);
+        }
     }
+}
     private Circle[] getCirculosByMesa(int numeroMesa) {
         switch (numeroMesa) {
             case 1: return new Circle[]{m11, m12, m13, m14};
