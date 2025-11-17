@@ -147,17 +147,24 @@ public class MenuController {
                 JSONObject mesa = new JSONObject(mesaData);
                 JSONArray clientes = mesa.getJSONArray("clientes");
 
-                // PRIMERO cambiar todos los clientes a "servido"
+                System.out.println("=== INICIANDO SERVICIO MESA " + numeroMesa + " ===");
+                System.out.println("Clientes a servir: " + clientes.length());
+
+                // PRIMERO: Cambiar estado de los clientes a "servido"
+                for (int i = 0; i < clientes.length(); i++) {
+                    JSONObject clienteObj = clientes.getJSONObject(i);
+                    String clienteId = clienteObj.getString("_id");
+                    String estadoActual = clienteObj.getString("estado");
+                    System.out.println("Cliente " + clienteId + " - Estado actual: " + estadoActual);
+
+                    servirClienteEnServidor(clienteId);
+                }
+
+                // SEGUNDO: Enviar mensaje WebSocket a TODOS los clientes
                 for (int i = 0; i < clientes.length(); i++) {
                     JSONObject clienteObj = clientes.getJSONObject(i);
                     String clienteId = clienteObj.getString("_id");
                     enviarMensajeWebSocket(clienteId, numeroMesa);
-                }
-
-                for (int i = 0; i < clientes.length(); i++) {
-                    JSONObject clienteObj = clientes.getJSONObject(i);
-                    String clienteId = clienteObj.getString("_id");
-                    servirClienteEnServidor(clienteId);
                 }
 
                 // TERCERO: Limpiar pedidos de los clientes
@@ -167,12 +174,21 @@ public class MenuController {
                     limpiarPedidosCliente(clienteId);
                 }
 
+                // VERIFICAR: Obtener el estado actualizado de la mesa
+                String mesaActualizadaData = getMesaFromServer(mesaId);
+                JSONObject mesaActualizada = new JSONObject(mesaActualizadaData);
+                String estadoFinal = mesaActualizada.getString("estado");
+
+                System.out.println("=== SERVICIO COMPLETADO MESA " + numeroMesa + " ===");
+                System.out.println("Estado final de la mesa: " + estadoFinal);
+
                 javafx.application.Platform.runLater(() -> {
                     actualizarTextFill(numeroMesa, "servido", clientes.length());
-                    System.out.println("Mesa " + numeroMesa + " servida");
+                    System.out.println("✓ UI actualizada - Mesa " + numeroMesa + " marcada como SERVIDA");
                 });
             } catch (Exception e) {
                 e.printStackTrace();
+                System.err.println("✗ Error en servirMesa: " + e.getMessage());
             }
         }).start();
     }
@@ -263,6 +279,8 @@ public class MenuController {
                 return Color.RED;
             case "pidiendo":
                 return Color.YELLOW;
+            case "servido":
+                return Color.BLUE;
             default:
                 return Color.GRAY;
         }
@@ -372,7 +390,7 @@ public class MenuController {
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
 
-            String jsonInputString = "{\"estado\": \"ocupada\"}";
+            String jsonInputString = "{\"estado\": \"servido\"}";
 
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
