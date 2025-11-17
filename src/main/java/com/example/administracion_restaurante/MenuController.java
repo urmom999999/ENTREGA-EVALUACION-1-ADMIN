@@ -1,9 +1,13 @@
 package com.example.administracion_restaurante;
-
+//Actualizar cada poco
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,6 +19,8 @@ import java.net.URL;
 
 
 public class MenuController {
+    @FXML
+    public Circle m11,m12,m13,m14,m21,m22,m23,m24,m31,m32,m33,m34,m41,m42,m43,m44,m51,m52,m53,m54;
     @FXML
     private Button ButtonServe1, ButtonServe2, ButtonServe3, ButtonServe4, ButtonServe5;
     @FXML
@@ -32,11 +38,22 @@ public class MenuController {
     private okhttp3.WebSocket webSocket;
     private okhttp3.OkHttpClient client;
 
+
+    private Timeline timeline;
     @FXML
     private void initialize() {
         mapearButton();
         cargarMesas();
         conectarWebSocket();
+        iniciarActualizacionAutomatica();
+    }
+    //ACTUALIZAR CADA 2 SEGUNDOS
+    private void iniciarActualizacionAutomatica() {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+            cargarMesas();
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE); // Ejecutar indefinidamente
+        timeline.play();
     }
 
     private void mapearButton() {
@@ -97,7 +114,7 @@ public class MenuController {
     private void conectarWebSocket() {
         client = new okhttp3.OkHttpClient();
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url("ws://localhost:8080?type=admin")
+                .url("ws://localhost:5000?type=admin")
                 .build();
 
         webSocket = client.newWebSocket(request, new okhttp3.WebSocketListener() {
@@ -130,17 +147,26 @@ public class MenuController {
                 JSONObject mesa = new JSONObject(mesaData);
                 JSONArray clientes = mesa.getJSONArray("clientes");
 
+                // PRIMERO cambiar todos los clientes a "servido"
+                for (int i = 0; i < clientes.length(); i++) {
+                    JSONObject clienteObj = clientes.getJSONObject(i);
+                    String clienteId = clienteObj.getString("_id");
+                    enviarMensajeWebSocket(clienteId, numeroMesa);
+                }
+
                 for (int i = 0; i < clientes.length(); i++) {
                     JSONObject clienteObj = clientes.getJSONObject(i);
                     String clienteId = clienteObj.getString("_id");
                     servirClienteEnServidor(clienteId);
+                }
 
-                    enviarMensajeWebSocket(clienteId, numeroMesa);
-
+                // TERCERO: Limpiar pedidos de los clientes
+                for (int i = 0; i < clientes.length(); i++) {
+                    JSONObject clienteObj = clientes.getJSONObject(i);
+                    String clienteId = clienteObj.getString("_id");
                     limpiarPedidosCliente(clienteId);
                 }
 
-                // Enviar mensaje via WebSocket en lugar de Intent
                 javafx.application.Platform.runLater(() -> {
                     actualizarTextFill(numeroMesa, "servido", clientes.length());
                     System.out.println("Mesa " + numeroMesa + " servida");
@@ -152,11 +178,18 @@ public class MenuController {
     }
     private void limpiarPedidosCliente(String clienteId) {
         try {
-            URL url = new URL("http://localhost:5000/clientes/" + clienteId + "/limpiar-pedidos");
+            URL url = new URL("http://localhost:5000/clientes/" + clienteId);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+            String jsonInputString = "{\"pedidos\": [], \"totalPedidos\": 0}";
+
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
 
             int code = connection.getResponseCode();
             if (code == 200) {
@@ -194,29 +227,44 @@ public class MenuController {
 
 //CAMBIAR COLOR CIRCULO
     private void actualizarTextFill(int numeroMesa, String estado, int numClientes) {
-        Text textFill = getTextFillByNumber(numeroMesa);
-        if (textFill != null) {
-            String texto = "Mesa " + numeroMesa + " - " + estado.toUpperCase() +
-                    " - Clientes: " + numClientes;
-            textFill.setText(texto);
+        Circle[] circulosMesa = getCirculosByMesa(numeroMesa);
 
-            // Cambiar color según estado
-            switch (estado) {
-                case "libre":
-                    textFill.setFill(Color.GREEN);
-                    break;
-                case "ocupada":
-                    textFill.setFill(Color.ORANGE);
-                    break;
-                case "servido":
-                    textFill.setFill(Color.BLUE);
-                    break;
-                case "esperando-pedido":
-                    textFill.setFill(Color.RED);
-                    break;
-                default:
-                    textFill.setFill(Color.BLACK);
+        if (circulosMesa != null) {
+            // Resetear todos los círculos de la mesa
+            for (Circle circle : circulosMesa) {
+                circle.setFill(javafx.scene.paint.Color.GRAY); // Color por defecto
             }
+
+            // Colorear solo los círculos de clientes activos
+            for (int i = 0; i < numClientes && i < 4; i++) {
+                Color color = getColorByEstado(estado);
+                circulosMesa[i].setFill(color);
+            }
+        }
+
+    }
+    private Circle[] getCirculosByMesa(int numeroMesa) {
+        switch (numeroMesa) {
+            case 1: return new Circle[]{m11, m12, m13, m14};
+            case 2: return new Circle[]{m21, m22, m23, m24};
+            case 3: return new Circle[]{m31, m32, m33, m34};
+            case 4: return new Circle[]{m41, m42, m43, m44};
+            case 5: return new Circle[]{m51, m52, m53, m54};
+            default: return null;
+        }
+    }
+    private Color getColorByEstado(String estado) {
+        switch (estado) {
+            case "libre":
+                return Color.GREEN;
+            case "ocupada":
+                return Color.ORANGE;
+            case "esperando-pedido":
+                return Color.RED;
+            case "pidiendo":
+                return Color.YELLOW;
+            default:
+                return Color.GRAY;
         }
     }
 
@@ -324,7 +372,7 @@ public class MenuController {
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
 
-            String jsonInputString = "{\"estado\": \"servido\"}";
+            String jsonInputString = "{\"estado\": \"ocupada\"}";
 
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
