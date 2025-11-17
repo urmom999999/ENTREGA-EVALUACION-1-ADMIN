@@ -259,7 +259,7 @@ public class MenuController {
                 return Color.GREEN;
             case "ocupada":
                 return Color.ORANGE;
-            case "esperando-pedido":
+            case "esperando":
                 return Color.RED;
             case "pidiendo":
                 return Color.YELLOW;
