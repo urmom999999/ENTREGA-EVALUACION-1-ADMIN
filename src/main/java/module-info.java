@@ -5,6 +5,7 @@ module com.example.administracion_restaurante {
     requires com.dlsc.formsfx;
     requires org.json;
     requires okhttp3;
+    requires annotations;
 
     opens com.example.administracion_restaurante to javafx.fxml;
     exports com.example.administracion_restaurante;

@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 
 public class MenuController {
@@ -28,7 +30,7 @@ public class MenuController {
     @FXML
     private Text TextFill1, TextFill2, TextFill3, TextFill4, TextFill5;
 
-    private String[] mesaIds = {
+    private final String[] mesaIds = {
             "6913f603bd20090f1876023c", //Mesa 1
             "6913f603bd20090f1876023d", //Mesa 2
             "6913f603bd20090f1876023e", //Mesa 3
@@ -39,7 +41,6 @@ public class MenuController {
     private okhttp3.OkHttpClient client;
 
 
-    private Timeline timeline;
     @FXML
     private void initialize() {
         mapearButton();
@@ -49,25 +50,23 @@ public class MenuController {
     }
     //ACTUALIZAR CADA 2 SEGUNDOS
     private void iniciarActualizacionAutomatica() {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
-            cargarMesas();
-        }));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), _ -> cargarMesas()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
     private void mapearButton() {
-        ButtonFree1.setOnAction(event -> liberarMesa(1));
-        ButtonFree2.setOnAction(event -> liberarMesa(2));
-        ButtonFree3.setOnAction(event -> liberarMesa(3));
-        ButtonFree4.setOnAction(event -> liberarMesa(4));
-        ButtonFree5.setOnAction(event -> liberarMesa(5));
+        ButtonFree1.setOnAction(_ -> liberarMesa(1));
+        ButtonFree2.setOnAction(_ -> liberarMesa(2));
+        ButtonFree3.setOnAction(_ -> liberarMesa(3));
+        ButtonFree4.setOnAction(_ -> liberarMesa(4));
+        ButtonFree5.setOnAction(_ -> liberarMesa(5));
 
-        ButtonServe1.setOnAction(event -> servirMesa(1));
-        ButtonServe2.setOnAction(event -> servirMesa(2));
-        ButtonServe3.setOnAction(event -> servirMesa(3));
-        ButtonServe4.setOnAction(event -> servirMesa(4));
-        ButtonServe5.setOnAction(event -> servirMesa(5));
+        ButtonServe1.setOnAction(_ -> servirMesa(1));
+        ButtonServe2.setOnAction(_ -> servirMesa(2));
+        ButtonServe3.setOnAction(_ -> servirMesa(3));
+        ButtonServe4.setOnAction(_ -> servirMesa(4));
+        ButtonServe5.setOnAction(_ -> servirMesa(5));
     }
 
     private void cargarMesas() {
@@ -82,10 +81,7 @@ public class MenuController {
                     String estado = mesa.getString("estado");
                     JSONArray clientes = mesa.getJSONArray("clientes");
 
-                    int finalI = i;
-                    javafx.application.Platform.runLater(() -> {
-                        actualizarTextFill(numeroMesa, estado, clientes.length());
-                    });
+                    javafx.application.Platform.runLater(() -> actualizarTextFill(numeroMesa, estado, clientes.length()));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -105,9 +101,7 @@ public class MenuController {
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                javafx.application.Platform.runLater(() -> {
-                    System.out.println("Error liberando mesa " + numeroMesa + ": " + e.getMessage());
-                });
+                javafx.application.Platform.runLater(() -> System.out.println("Error liberando mesa " + numeroMesa + ": " + e.getMessage()));
             }
         }).start();
     }
@@ -119,22 +113,22 @@ public class MenuController {
 
         webSocket = client.newWebSocket(request, new okhttp3.WebSocketListener() {
             @Override
-            public void onOpen(okhttp3.WebSocket webSocket, okhttp3.Response response) {
+            public void onOpen(@NotNull okhttp3.WebSocket webSocket, @NotNull okhttp3.Response response) {
                 System.out.println("Conectado al servidor WebSocket (Admin)");
             }
 
             @Override
-            public void onMessage(okhttp3.WebSocket webSocket, String text) {
+            public void onMessage(@NotNull okhttp3.WebSocket webSocket, @NotNull String text) {
                 System.out.println("Mensaje recibido: " + text);
             }
 
             @Override
-            public void onClosed(okhttp3.WebSocket webSocket, int code, String reason) {
+            public void onClosed(@NotNull okhttp3.WebSocket webSocket, int code, @NotNull String reason) {
                 System.out.println("Conexión WebSocket cerrada: " + reason);
             }
 
             @Override
-            public void onFailure(okhttp3.WebSocket webSocket, Throwable t, okhttp3.Response response) {
+            public void onFailure(@NotNull okhttp3.WebSocket webSocket, @NotNull Throwable t, okhttp3.Response response) {
                 System.err.println("Error WebSocket: " + t.getMessage());
             }
         });
@@ -203,7 +197,7 @@ public class MenuController {
             String jsonInputString = "{\"pedidos\": [], \"totalPedidos\": 0}";
 
             try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
+                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
@@ -232,16 +226,8 @@ public class MenuController {
             System.err.println("Error enviando mensaje WebSocket: " + e.getMessage());
         }
     }
-    public void cerrarConexion() {
-        if (webSocket != null) {
-            webSocket.close(1000, "Aplicación cerrada");
-        }
-        if (client != null) {
-            client.dispatcher().executorService().shutdown();
-        }
-    }
 
-//CAMBIAR COLOR CIRCULO
+    //CAMBIAR COLOR CIRCULO
 private void actualizarTextFill(int numeroMesa, String estado, int numClientes) {
     Circle[] circulosMesa = getCirculosByMesa(numeroMesa);
     Text textFill = getTextFillByNumber(numeroMesa);
@@ -264,41 +250,35 @@ private void actualizarTextFill(int numeroMesa, String estado, int numClientes) 
     }
 }
     private Circle[] getCirculosByMesa(int numeroMesa) {
-        switch (numeroMesa) {
-            case 1: return new Circle[]{m11, m12, m13, m14};
-            case 2: return new Circle[]{m21, m22, m23, m24};
-            case 3: return new Circle[]{m31, m32, m33, m34};
-            case 4: return new Circle[]{m41, m42, m43, m44};
-            case 5: return new Circle[]{m51, m52, m53, m54};
-            default: return null;
-        }
+        return switch (numeroMesa) {
+            case 1 -> new Circle[]{m11, m12, m13, m14};
+            case 2 -> new Circle[]{m21, m22, m23, m24};
+            case 3 -> new Circle[]{m31, m32, m33, m34};
+            case 4 -> new Circle[]{m41, m42, m43, m44};
+            case 5 -> new Circle[]{m51, m52, m53, m54};
+            default -> null;
+        };
     }
     private Color getColorByEstado(String estado) {
-        switch (estado) {
-            case "libre":
-                return Color.GREEN;
-            case "ocupada":
-                return Color.ORANGE;
-            case "esperando":
-                return Color.RED;
-            case "pidiendo":
-                return Color.YELLOW;
-            case "servido":
-                return Color.BLUE;
-            default:
-                return Color.GRAY;
-        }
+        return switch (estado) {
+            case "libre" -> Color.GREEN;
+            case "ocupada" -> Color.ORANGE;
+            case "esperando" -> Color.RED;
+            case "pidiendo" -> Color.YELLOW;
+            case "servido" -> Color.BLUE;
+            default -> Color.GRAY;
+        };
     }
 
     private Text getTextFillByNumber(int numero) {
-        switch (numero) {
-            case 1: return TextFill1;
-            case 2: return TextFill2;
-            case 3: return TextFill3;
-            case 4: return TextFill4;
-            case 5: return TextFill5;
-            default: return null;
-        }
+        return switch (numero) {
+            case 1 -> TextFill1;
+            case 2 -> TextFill2;
+            case 3 -> TextFill3;
+            case 4 -> TextFill4;
+            case 5 -> TextFill5;
+            default -> null;
+        };
     }
 
 //===============CONEXIÓN CON EL SERVIDOR
@@ -314,7 +294,7 @@ private void actualizarTextFill(int numeroMesa, String estado, int numClientes) 
             int code = connection.getResponseCode();
             if (code == 200) {
                 try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                     StringBuilder response = new StringBuilder();
                     String responseLine;
                     while ((responseLine = br.readLine()) != null) {
@@ -341,7 +321,7 @@ private void actualizarTextFill(int numeroMesa, String estado, int numClientes) 
             int code = connection.getResponseCode();
             if (code == 200) {
                 try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                     StringBuilder response = new StringBuilder();
                     String responseLine;
                     while ((responseLine = br.readLine()) != null) {
@@ -368,7 +348,7 @@ private void actualizarTextFill(int numeroMesa, String estado, int numClientes) 
             int code = connection.getResponseCode();
             if (code == 200) {
                 try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                     StringBuilder response = new StringBuilder();
                     String responseLine;
                     while ((responseLine = br.readLine()) != null) {
@@ -397,7 +377,7 @@ private void actualizarTextFill(int numeroMesa, String estado, int numClientes) 
             String jsonInputString = "{\"estado\": \"servido\"}";
 
             try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
+                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
